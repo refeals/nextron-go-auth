@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { ReactElement } from "react"
 
 export default function Dashboard(page: ReactElement) {
   return (
@@ -13,7 +13,8 @@ export default function Dashboard(page: ReactElement) {
           </ul>
         </nav>
       </header>
+      <aside>User info here</aside>
       <main>{page}</main>
     </>
-  );
+  )
 }

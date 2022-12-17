@@ -1,12 +1,12 @@
-import React, { useEffect } from "react";
-import { useRouter } from "next/router";
+import React, { useEffect } from "react"
+import { useRouter } from "next/router"
 
 export default function Index() {
-  const router = useRouter();
+  const router = useRouter()
 
   useEffect(() => {
-    router.push("/session");
-  }, []);
+    router.push("/login")
+  }, [])
 
-  return <></>;
+  return <></>
 }

@@ -1,51 +1,51 @@
-import React, { useRef, useState } from "react";
-import { useRouter } from "next/router";
-import { fetchLogin } from "../src/fetch/fetchLogin";
-import { createCookie } from "../utils";
-import { useAppContext } from "../src/context/AppContext";
+import React, { useRef, useState } from "react"
+import { useRouter } from "next/router"
+import { fetchLogin } from "src/fetch/fetchLogin"
+import { useAppContext } from "src/context/AppContext"
+import { createCookie } from "utils"
 
 export default function Login() {
-  const router = useRouter();
-  const emailRef = useRef<HTMLInputElement | null>(null);
-  const passwordRef = useRef<HTMLInputElement | null>(null);
-  const { setUser, setToken } = useAppContext();
+  const router = useRouter()
+  const emailRef = useRef<HTMLInputElement | null>(null)
+  const passwordRef = useRef<HTMLInputElement | null>(null)
+  const { setUser, setToken } = useAppContext()
   const [state, setState] = useState({
     isSubmitting: false,
     message: "",
-  });
+  })
 
-  const { isSubmitting, message } = state;
+  const { isSubmitting, message } = state
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setState({ ...state, isSubmitting: true });
+    e.preventDefault()
+    setState({ ...state, isSubmitting: true })
 
     try {
-      const email = emailRef.current?.value ?? "";
-      const password = passwordRef.current?.value ?? "";
-      const res = await fetchLogin(email, password);
+      const email = emailRef.current?.value ?? ""
+      const password = passwordRef.current?.value ?? ""
+      const res = await fetchLogin(email, password)
 
-      const { token, success, user } = res;
+      const { token, success, user } = res
 
       if (!success) {
         return setState({
           ...state,
           isSubmitting: false,
-        });
+        })
       }
 
       // expire in 30 minutes(same time as the cookie is invalidated on the backend)
-      (window as any).token = token;
-      createCookie("token", token, 0.5);
+      ;(window as any).token = token
+      createCookie("token", token, 0.5)
 
-      setUser(user);
-      setToken(token);
+      setUser(user)
+      setToken(token)
 
-      router.push({ pathname: "/dashboard" });
+      router.push({ pathname: "/dashboard" })
     } catch (e: any) {
-      setState({ ...state, message: e.toString(), isSubmitting: false });
+      setState({ ...state, message: e.toString(), isSubmitting: false })
     }
-  };
+  }
 
   return (
     <form className="wrapper" onSubmit={handleSubmit}>
@@ -68,5 +68,5 @@ export default function Login() {
       </button>
       <div className="message">{message}</div>
     </form>
-  );
+  )
 }

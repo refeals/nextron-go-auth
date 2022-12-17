@@ -1,12 +1,12 @@
-import { apiNextURl } from "../../api";
-import { User } from "../types";
+import { apiNextURl } from "api"
+import { User } from "src/types"
 
 type JSONResponse = {
-  success: boolean;
-  token: string;
-  user: User | null;
-  msg: string;
-};
+  success: boolean
+  token: string
+  user: User | null
+  msg: string
+}
 
 export async function fetchLogin(
   email: string,
@@ -21,8 +21,8 @@ export async function fetchLogin(
     headers: {
       "Content-Type": "application/json",
     },
-  });
+  })
 
-  const response: JSONResponse = await res.json();
-  return response;
+  const response: JSONResponse = await res.json()
+  return response
 }

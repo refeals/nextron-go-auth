@@ -1,10 +1,10 @@
-import { apiNextURl } from "../../api";
+import { apiNextURl } from "api"
 
 type JSONResponse = {
-  success: boolean;
-  errors: [string];
-  msg: string;
-};
+  success: boolean
+  errors: [string]
+  msg: string
+}
 
 export async function fetchRegister(
   name: string,
@@ -19,8 +19,8 @@ export async function fetchRegister(
       password,
     }),
     headers: { "Content-Type": "application/json" },
-  });
+  })
 
-  const response: JSONResponse = await res.json();
-  return response;
+  const response: JSONResponse = await res.json()
+  return response
 }
