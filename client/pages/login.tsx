@@ -41,7 +41,7 @@ export default function Login() {
       setUser(user);
       setToken(token);
 
-      router.push({ pathname: "/session" });
+      router.push({ pathname: "/dashboard" });
     } catch (e: any) {
       setState({ ...state, message: e.toString(), isSubmitting: false });
     }
