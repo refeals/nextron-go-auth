@@ -1,88 +1,72 @@
-import React, { useState } from 'react'
-import { useRouter } from 'next/router'
-import { apiNextURl } from '../api'
-import { createCookie } from '../utils'
+import React, { useRef, useState } from "react";
+import { useRouter } from "next/router";
+import { fetchLogin } from "../src/fetch/fetchLogin";
+import { createCookie } from "../utils";
+import { useAppContext } from "../src/context/AppContext";
 
 export default function Login() {
   const router = useRouter();
+  const emailRef = useRef<HTMLInputElement | null>(null);
+  const passwordRef = useRef<HTMLInputElement | null>(null);
+  const { setUser, setToken } = useAppContext();
   const [state, setState] = useState({
-    email: '',
-    password: '',
     isSubmitting: false,
-    message: '',
-  })
+    message: "",
+  });
 
-  const { email, password, isSubmitting, message } = state
+  const { isSubmitting, message } = state;
 
-  const handleChange = async (e: any) => {
-    const { name, value } = e.target
-    await setState({ ...state, [name]: value })
-  }
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setState({ ...state, isSubmitting: true });
 
-  const handleSubmit = async () => {
-    setState({ ...state, isSubmitting: true })
-
-    const { email, password } = state
     try {
-      const res = await fetch(`${apiNextURl}/login`, {
-        method: 'POST',
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }).then(res => res.json())
+      const email = emailRef.current?.value ?? "";
+      const password = passwordRef.current?.value ?? "";
+      const res = await fetchLogin(email, password);
 
-      const { token, success, msg, user } = res
+      const { token, success, user } = res;
 
       if (!success) {
         return setState({
           ...state,
-          message: msg,
           isSubmitting: false,
-        })
+        });
       }
-      // expire in 30 minutes(same time as the cookie is invalidated on the backend)
-      (window as any).token = token
-      createCookie('token', token, 0.5)
 
-      router.push({ pathname: '/session' })
+      // expire in 30 minutes(same time as the cookie is invalidated on the backend)
+      (window as any).token = token;
+      createCookie("token", token, 0.5);
+
+      setUser(user);
+      setToken(token);
+
+      router.push({ pathname: "/session" });
     } catch (e: any) {
-      setState({ ...state, message: e.toString(), isSubmitting: false })
+      setState({ ...state, message: e.toString(), isSubmitting: false });
     }
-  }
+  };
 
   return (
-    <div className="wrapper">
+    <form className="wrapper" onSubmit={handleSubmit}>
       <h1>Login</h1>
       <input
         className="input"
-        type="text"
+        type="email"
         placeholder="email"
-        value={email}
-        name="email"
-        onChange={e => {
-          handleChange(e)
-        }}
+        ref={emailRef}
       />
-
       <input
         className="input"
         type="password"
         placeholder="password"
-        value={password}
-        name="password"
-        onChange={e => {
-          handleChange(e)
-        }}
+        ref={passwordRef}
       />
 
-      <button disabled={isSubmitting} onClick={() => handleSubmit()}>
-        {isSubmitting ? '.....' : 'login'}
+      <button type="submit" disabled={isSubmitting}>
+        {isSubmitting ? "....." : "login"}
       </button>
       <div className="message">{message}</div>
-    </div>
-  )
+    </form>
+  );
 }

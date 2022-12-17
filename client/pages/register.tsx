@@ -1,94 +1,71 @@
-import React, { useState } from 'react'
-import { useRouter } from 'next/router';
-import { apiNextURl } from '../api'
+import React, { useState, useRef } from "react";
+import { useRouter } from "next/router";
+import { apiNextURl } from "../api";
+import { fetchRegister } from "../src/fetch/fetchRegister";
 
 export default function Register() {
   const router = useRouter();
+  const nameRef = useRef<HTMLInputElement | null>(null);
+  const emailRef = useRef<HTMLInputElement | null>(null);
+  const passwordRef = useRef<HTMLInputElement | null>(null);
   const [state, setState] = useState<any>({
-    email: '',
-    password: '',
-    name: '',
     isSubmitting: false,
-    message: '',
+    message: "",
     errors: null,
-  })
+  });
 
-  const { email, password, name, message, isSubmitting, errors } = state
+  const { message, isSubmitting, errors } = state;
 
-  const handleChange = async (e: any) => {
-    await setState({ ...state, [e.target.name]: e.target.value })
-  }
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setState({ ...state, isSubmitting: true });
 
-  const handleSubmit = async () => {
-    setState({ ...state, isSubmitting: true })
-
-    const { email, password, name } = state
     try {
-      const res = await fetch(`${apiNextURl}/register`, {
-        method: 'POST',
-        body: JSON.stringify({
-          email,
-          password,
-          name,
-        }),
-        headers: { 'Content-Type': 'application/json' },
-      }).then(res => res.json())
-      const { success, msg, errors } = res
+      const name = nameRef.current?.value ?? "";
+      const email = emailRef.current?.value ?? "";
+      const password = passwordRef.current?.value ?? "";
+      const res = await fetchRegister(name, email, password);
+      const { success, msg, errors } = res;
 
       if (!success) {
-        return setState({ ...state, message: msg, errors, isSubmitting: false })
+        return setState({
+          isSubmitting: false,
+        });
       }
 
-      router.push('/login')
+      router.push("/login");
     } catch (e: any) {
-      setState({ ...state, message: e.toString(), isSubmitting: false })
+      setState({ ...state, message: e.toString(), isSubmitting: false });
     }
-  }
+  };
 
   return (
-    <div className="wrapper">
+    <form className="wrapper" onSubmit={handleSubmit}>
       <h1>Register</h1>
+      <input className="input" type="text" placeholder="Name" ref={nameRef} />
       <input
         className="input"
-        type="name"
-        placeholder="Name"
-        value={name}
-        name="name"
-        onChange={e => {
-          handleChange(e)
-        }}
-      />
-      <input
-        className="input"
-        type="text"
+        type="email"
         placeholder="Email"
-        value={email}
-        name="email"
-        onChange={e => {
-          handleChange(e)
-        }}
+        ref={emailRef}
       />
       <input
         className="input"
         type="password"
         placeholder="Password"
-        value={password}
-        name="password"
-        onChange={e => {
-          handleChange(e)
-        }}
+        ref={passwordRef}
       />
 
-      <button disabled={isSubmitting} onClick={() => handleSubmit()}>
-        {isSubmitting ? '.....' : 'Sign Up'}
+      <button disabled={isSubmitting}>
+        {isSubmitting ? "....." : "Sign Up"}
       </button>
       <div className="message">{message && <p>&bull; {message}</p>}</div>
       <div>
         {errors &&
           errors.map((error: any, id: string) => {
-            return <p key={id}> &bull; {error}</p>
+            return <p key={id}> &bull; {error}</p>;
           })}
       </div>
-    </div>
-  )
+    </form>
+  );
 }
