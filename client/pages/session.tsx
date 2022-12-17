@@ -3,53 +3,51 @@ import { useRouter } from "next/router";
 import { deleteCookie } from "../utils";
 import { useAppContext } from "../src/context/AppContext";
 import { fetchSession } from "../src/fetch/fetchSession";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { User } from "../src/types";
 
-export default function Session() {
+export default function Session({
+  data,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
-  const { user, setUser, setToken } = useAppContext();
-
-  const getUserInfo = async () => {
-    try {
-      const res = await fetchSession();
-
-      const { user, success, token } = res;
-
-      if (!success) {
-        router.push("/login");
-        return;
-      }
-      setUser(user);
-      setToken(token);
-    } catch (e: any) {
-      console.error(e);
-    }
-  };
-
-  const handleLogout = () => {
-    deleteCookie("token");
-    router.push("/login");
-  };
+  const { setUser } = useAppContext();
 
   useEffect(() => {
-    getUserInfo();
+    setUser(data.user);
+    router.push("/dashboard");
   }, []);
 
-  return (
-    <div className="wrapper">
-      <h1>Welcome, {user && user.name}</h1>
-      {user && user.email}
-      {/* <div className="message">
-        {isFetching ? "fetching details.." : message}
-      </div> */}
-
-      <button
-        style={{ height: "30px" }}
-        onClick={() => {
-          handleLogout();
-        }}
-      >
-        logout
-      </button>
-    </div>
-  );
+  return <>...</>;
 }
+
+type JSONResponse = {
+  success: boolean;
+  user: User | null;
+};
+
+export const getServerSideProps = (async ({ req: { cookies } }) => {
+  const res = await fetch(`http://api:8081/session`, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      Accept: "application/json",
+      Cookie: `token=${cookies.token}`,
+    },
+  });
+  const data: JSONResponse = await res.json();
+
+  if (!data.success) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/login",
+      },
+    };
+  }
+
+  return {
+    props: {
+      data,
+    },
+  };
+}) satisfies GetServerSideProps;
