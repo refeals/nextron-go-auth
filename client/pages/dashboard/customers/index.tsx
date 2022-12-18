@@ -1,5 +1,7 @@
 import { GetServerSideProps } from "next"
 import Link from "next/link"
+import { useEffect } from "react"
+import { useAppContext } from "src/context/AppContext"
 import DashboardLayout from "src/layouts/dashboardLayout"
 import { Customer } from "src/types"
 
@@ -8,6 +10,14 @@ interface PropsType {
 }
 
 export default function Customers({ data }: PropsType) {
+  const { setCustomers } = useAppContext()
+
+  useEffect(() => {
+    if (data.customers) {
+      setCustomers(data.customers)
+    }
+  }, [])
+
   const renderCustomerRow = (c: Customer) => {
     return (
       <tr key={c.customerID}>
