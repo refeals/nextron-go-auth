@@ -35,7 +35,7 @@ export default function Customers({ data }: PropsType) {
       <table className="list">
         <thead>
           <tr>
-            <th>Id</th>
+            <th>ID</th>
             <th>Name</th>
             <th>Email</th>
           </tr>
