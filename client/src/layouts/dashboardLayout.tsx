@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { ReactElement } from "react"
 
 export default function Dashboard(page: ReactElement) {
@@ -6,10 +7,12 @@ export default function Dashboard(page: ReactElement) {
       <header>
         <nav>
           <ul>
-            <li>Customers</li>
-            <li>Customers</li>
-            <li>Customers</li>
-            <li>Customers</li>
+            <li>
+              <Link href="/dashboard/customers">Customers</Link>
+            </li>
+            <li>
+              <Link href="/dashboard/payments">Payment Methods</Link>
+            </li>
           </ul>
         </nav>
       </header>
