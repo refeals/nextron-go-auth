@@ -1,9 +1,39 @@
 import { GetServerSideProps } from "next"
+import Link from "next/link"
 import DashboardLayout from "src/layouts/dashboardLayout"
+import { Customer } from "src/types"
 
-export default function Customers({ data }: { data: any }) {
-  console.log(data)
-  return <>Customers</>
+interface PropsType {
+  data: { customers: [Customer] }
+}
+
+export default function Customers({ data }: PropsType) {
+  const renderCustomerRow = (c: Customer) => {
+    return (
+      <tr key={c.customerID}>
+        <td>{c.customerID}</td>
+        <td>{c.name}</td>
+        <td>{c.email}</td>
+      </tr>
+    )
+  }
+
+  return (
+    <>
+      <Link href="/dashboard/customers/new">Add new customer</Link>
+      <h1>Customers</h1>
+      <table className="list">
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Email</th>
+          </tr>
+        </thead>
+        <tbody>{data.customers.map((c) => renderCustomerRow(c))}</tbody>
+      </table>
+    </>
+  )
 }
 
 Customers.getLayout = DashboardLayout

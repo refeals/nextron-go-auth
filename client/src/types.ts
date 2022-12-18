@@ -10,7 +10,7 @@ export interface User {
 export type Token = string
 
 export interface Customer {
-  customerId: string
+  customerID: string
   registrationTime: number
   email: string
   emailVerifiedTime: number
