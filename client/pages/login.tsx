@@ -38,8 +38,8 @@ export default function Login() {
       ;(window as any).token = token
       createCookie("token", token, 0.5)
 
-      setUser(user)
-      setToken(token)
+      await setUser({ ...user })
+      await setToken(token)
 
       router.push({ pathname: "/dashboard" })
     } catch (e: any) {

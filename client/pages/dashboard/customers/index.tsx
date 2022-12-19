@@ -10,7 +10,7 @@ interface PropsType {
 }
 
 export default function Customers({ data }: PropsType) {
-  const { setCustomers } = useAppContext()
+  const { user, setCustomers } = useAppContext()
 
   useEffect(() => {
     if (data.customers) {
@@ -30,18 +30,24 @@ export default function Customers({ data }: PropsType) {
 
   return (
     <>
-      <Link href="/dashboard/customers/new">Add new customer</Link>
-      <h1>Customers</h1>
-      <table className="list">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Email</th>
-          </tr>
-        </thead>
-        <tbody>{data.customers.map((c) => renderCustomerRow(c))}</tbody>
-      </table>
+      <aside>
+        <h2>{user?.name}</h2>
+        <p>{user?.email}</p>
+      </aside>
+      <main>
+        <Link href="/dashboard/customers/new">Add new customer</Link>
+        <h1>Customers</h1>
+        <table className="list">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+            </tr>
+          </thead>
+          <tbody>{data.customers.map((c) => renderCustomerRow(c))}</tbody>
+        </table>
+      </main>
     </>
   )
 }

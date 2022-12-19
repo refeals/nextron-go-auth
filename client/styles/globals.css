@@ -1,3 +1,8 @@
+html,
+body {
+  margin: 0;
+}
+
 .wrapper {
   display: flex;
   flex-direction: column;
@@ -16,9 +21,9 @@
   padding: 10px;
   outline: 0;
 }
-.message{
-    font-size: 1.2em;
-    margin-top:10px;
+.message {
+  font-size: 1.2em;
+  margin-top: 10px;
 }
 button {
   width: 150px;
@@ -28,4 +33,23 @@ button {
   cursor: pointer;
   color: #fff;
   background-color: #01506f;
+}
+
+/* Header */
+header nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  background-color: aqua;
+}
+
+header nav ul li {
+  padding: 8px 12px;
+}
+
+/* Main */
+.main-content {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
 }

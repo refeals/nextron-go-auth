@@ -1,5 +1,6 @@
 import { GetServerSideProps } from "next"
 import Link from "next/link"
+import { useAppContext } from "src/context/AppContext"
 import DashboardLayout from "src/layouts/dashboardLayout"
 import { PaymentMethod } from "src/types"
 
@@ -8,7 +9,7 @@ interface PropsType {
 }
 
 export default function PaymentMethods({ data }: PropsType) {
-  // const { setCustomers } = useAppContext()
+  const { user } = useAppContext()
 
   // useEffect(() => {
   //   if (data.customers) {
@@ -28,18 +29,24 @@ export default function PaymentMethods({ data }: PropsType) {
 
   return (
     <>
-      <Link href="/dashboard/payments/new">Add new payment method</Link>
-      <h1>Payment Methods</h1>
-      <table className="list">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Customer ID</th>
-            <th>Method Type</th>
-          </tr>
-        </thead>
-        <tbody>{data.payments.map((c) => renderPaymentMethodRow(c))}</tbody>
-      </table>
+      <aside>
+        <h2>{user?.name}</h2>
+        <p>{user?.email}</p>
+      </aside>
+      <main>
+        <Link href="/dashboard/payments/new">Add new payment method</Link>
+        <h1>Payment Methods</h1>
+        <table className="list">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Customer ID</th>
+              <th>Method Type</th>
+            </tr>
+          </thead>
+          <tbody>{data.payments.map((c) => renderPaymentMethodRow(c))}</tbody>
+        </table>
+      </main>
     </>
   )
 }

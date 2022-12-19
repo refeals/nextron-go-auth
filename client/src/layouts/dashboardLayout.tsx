@@ -16,8 +16,7 @@ export default function Dashboard(page: ReactElement) {
           </ul>
         </nav>
       </header>
-      <aside>User info here</aside>
-      <main>{page}</main>
+      <div className="main-content">{page}</div>
     </>
   )
 }
